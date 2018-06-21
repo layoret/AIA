@@ -81,7 +81,7 @@ _.each(_latestArticles,function(article){
       console.log(article._id);
       article.update({_id:article._id},{$set:{xcerpt:"YOYO"}},{safe : true, upsert : true, new : true},function(a){
         console.log(a);
-      })
+      });
 
 })
   },5000);
