@@ -74,7 +74,7 @@ _.each(_latestArticles,function(article){
       var currentArticle=mongoose.model("RawArticle");
       console.log(article._id);
       //article.xcerpt="YOYO";
-      currentArticle.findOneAndUpdate({_id:article._id},article,{new:true},function(error,result){
+      currentArticle.findOneAndUpdate({_id:article._id},{extended:article.extended},{new:false},function(error,result){
         if(error)
       res.json(mResponse.response(null, null, "something went wrong", null));
     else
