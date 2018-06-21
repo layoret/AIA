@@ -8,7 +8,7 @@ var mongoose=require('mongoose');
 var MongoClient = require('mongodb').MongoClient;
 var identityService=require('../Services/identity.service');
 var db=require("../models/db");
-var ArticleRaw=require("../models/articleRaw.schema");
+var RawArticle=require("../models/articleRaw.schema");
 var ScrapeRules=require("../models/scraperules.schema");
 var xpath=require("xpath");
 var dom = require('xmldom').DOMParser;
@@ -16,7 +16,7 @@ var dom = require('xmldom').DOMParser;
 //var _models=require('../Services/loadScrapingModels');
 //var scrapeModels=[];
 var latestArticles=[];
-var currentArticle=new ArticleRaw({});
+
 
 
 var options = { method: 'POST',
@@ -34,7 +34,7 @@ var options = { method: 'POST',
 /* GET home page. */
 var entries=0;
 router.get('/', function(req, res, next) {
-  var _rawArticleModel=new ArticleRaw({});
+  var _rawArticleModel=new RawArticle({});
   //[------------------------------------------------------------------
   var findArticles=new Promise(function(resolve,reject){
     _rawArticleModel.findAll(function(error,docs){
@@ -51,22 +51,10 @@ router.get('/', function(req, res, next) {
   //console.log(scrapeModels);
   //var scrModel=scrapeModels[0];
   //var outlets=0;
-/*var getMeaning=new Promise(function(resolve,reject){2
-    console.log(currentArticle);
-    entries++;
-    options.form.txt=currentArticle.bodyText;
-    //consol(options);
-  /*request(options, function (error, response, body) {
-    if (error) throw new Error(error);
-    console.log(entries);
-    resolve(body);*/
-  
 
-//}).catch(function(e){
-
-//});
 //[-------------------------------------------------]
 findArticles.then(function(_latestArticles){
+  
   console.log(_latestArticles.length);
 _.each(_latestArticles,function(article){
   //var entries=0;
@@ -77,15 +65,28 @@ _.each(_latestArticles,function(article){
   request(options, function (error, response, body) {
       if (error) throw new Error(error);
       //console.log(body);
-      //article.extended=JSON.stringify(body);
+      try{
+        article.extended=JSON.parse(body);
+     /* article.extended.entities=JSON.parse(body.entity_list);
+      article.extended.concept=JSON.parse(body.concept_list);
+      article.extended.quotes=JSON.parse(body.quotation_list);*/
+      }catch(e){}
+      var currentArticle=mongoose.model("RawArticle");
       console.log(article._id);
-      article.update({_id:article._id},{$set:{xcerpt:"YOYO"}},{safe : true, upsert : true, new : true},function(a){
-        console.log(a);
-      });
+      //article.xcerpt="YOYO";
+      currentArticle.findOneAndUpdate({_id:article._id},article,{new:true},function(error,result){
+        if(error)
+      res.json(mResponse.response(null, null, "something went wrong", null));
+    else
+       {
+         console.log(result); 
+       }
+ });
+      
 
 })
-  },5000);
-  
+
+},15000);
   //currentArticle=article;
   //console.log(article.title);
   //getMeaning.then(function(){
