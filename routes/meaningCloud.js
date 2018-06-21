@@ -61,7 +61,7 @@ _.each(_latestArticles,function(article){
  // article=new ArticleRaw();
   //article=_article;
   options.form.txt=article.bodyText;
-  setTimeout(function(){
+  //function(){
   request(options, function (error, response, body) {
       if (error) throw new Error(error);
       //console.log(body);
@@ -86,7 +86,7 @@ _.each(_latestArticles,function(article){
 
 })
 
-},15000);
+//},15000);
   //currentArticle=article;
   //console.log(article.title);
   //getMeaning.then(function(){
