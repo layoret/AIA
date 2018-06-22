@@ -30,71 +30,61 @@ var options = { method: 'POST',
      doc:'',
      tt: 'ecq' } };
 
-
+var findArticles=new Promise(function(resolve,reject){
+    var _rawArticleModel=new RawArticle({});
+      _rawArticleModel.findAll(function(error,docs){
+        //ScrapeRule.findOne({'ENTITY_CODE':'Hoy'},function(err,docs){
+        latestArticles=docs;
+        resolve(latestArticles);
+      })
+    }).catch(function(e){});
 /* GET home page. */
 var entries=0;
 router.get('/', function(req, res, next) {
-  var _rawArticleModel=new RawArticle({});
-  //[------------------------------------------------------------------
-  var findArticles=new Promise(function(resolve,reject){
-    _rawArticleModel.findAll(function(error,docs){
-      //ScrapeRule.findOne({'ENTITY_CODE':'Hoy'},function(err,docs){
-      latestArticles=docs;
-      resolve(latestArticles);
-    })
-  }).catch(function(e){});
-  //-------------------------------------------------------------------]
-  //console.log(latestArticles);
   
-  //scrapeModels=docs;
+//[------------------------------------------------------------------
  
-  //console.log(scrapeModels);
-  //var scrModel=scrapeModels[0];
-  //var outlets=0;
+//-------------------------------------------------------------------]
 
 //[-------------------------------------------------]
 findArticles.then(function(_latestArticles){
-  
-  console.log(_latestArticles.length);
-_.each(_latestArticles,function(article){
-  //var entries=0;
- // article=new ArticleRaw();
-  //article=_article;
-  options.form.txt=article.bodyText;
-  //function(){
-  request(options, function (error, response, body) {
-      if (error) throw new Error(error);
-      //console.log(body);
-      try{
-        article.extended=JSON.parse(body);
-     /* article.extended.entities=JSON.parse(body.entity_list);
-      article.extended.concept=JSON.parse(body.concept_list);
-      article.extended.quotes=JSON.parse(body.quotation_list);*/
-      }catch(e){}
-      var currentArticle=mongoose.model("RawArticle");
+  var idx=0;
+  var endx=_latestArticles.length-200;
+  var _latestArticles=_latestArticles;
+  //Main function to extract meaning cloud entities data
+  function analyze(){
+      //console.log(_latestArticles.length-1);
+      var article=  new RawArticle({});
+      article= _latestArticles[idx];
+      idx++;
       console.log(article._id);
-      //article.xcerpt="YOYO";
-      currentArticle.findOneAndUpdate({_id:article._id},{extended:article.extended},{new:false},function(error,result){
+      options.form.txt=article.bodyText;
+      request(options, function (error, response, body) {
+        if (error) throw new Error(error);
+        try{
+          article.extended=JSON.parse(body);
+        }catch(e){}
+        var currentArticle=mongoose.model("RawArticle");
+        currentArticle.findOneAndUpdate({_id:article._id},{extended:article.extended},{new:false},function(error,result){
         if(error)
-      res.json(mResponse.response(null, null, "something went wrong", null));
-    else
+          res.json(mResponse.response(null, null, "something went wrong", null));
+        else
        {
-         console.log(result); 
+         console.log(result);
+         console.log(idx); 
        }
+       if(idx==endx){
+        clearInterval(intervalObj);
+        console.log("finished");
+      }
  });
       
 
 })
 
-//},15000);
-  //currentArticle=article;
-  //console.log(article.title);
-  //getMeaning.then(function(){
-  //  console.log("Done");
-  //})
-  //options.form.txt=currentArticle.title;
-  //console.log(article);
-});
+};
+const intervalObj = setInterval(analyze,15000);
+
 });
 //---------------------------------------------------]
 });
