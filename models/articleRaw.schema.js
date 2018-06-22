@@ -34,6 +34,7 @@ var RawArticleSchema=new mongoose.Schema({
            tags:[String],
            mainCategory:String,
            extended:{ type: mongoose.Schema.Types.Mixed, default: {} },
+           analyzed:{type:Boolean, default:false}
            
         
 },{ minimize: false })

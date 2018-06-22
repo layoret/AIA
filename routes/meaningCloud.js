@@ -53,7 +53,6 @@ findArticles.then(function(_latestArticles){
   var _latestArticles=_latestArticles;
   //Main function to extract meaning cloud entities data
   function analyze(){
-      //console.log(_latestArticles.length-1);
       var article=  new RawArticle({});
       article= _latestArticles[idx];
       idx++;
@@ -63,8 +62,10 @@ findArticles.then(function(_latestArticles){
         if (error) throw new Error(error);
         try{
           article.extended=JSON.parse(body);
+          article.analyzed=true;
         }catch(e){}
         var currentArticle=mongoose.model("RawArticle");
+
         currentArticle.findOneAndUpdate({_id:article._id},{extended:article.extended},{new:false},function(error,result){
         if(error)
           res.json(mResponse.response(null, null, "something went wrong", null));
@@ -81,7 +82,6 @@ findArticles.then(function(_latestArticles){
       
 
 })
-
 };
 const intervalObj = setInterval(analyze,15000);
 
