@@ -10,8 +10,7 @@ var identityService=require('../Services/identity.service');
 var db=require("../models/db");
 var ArticleRaw=require("../models/articleRaw.schema");
 var ScrapeRules=require("../models/scraperules.schema");
-var xpath=require("xpath");
-var dom = require('xmldom').DOMParser;
+
 //Outlet scraping models 
 //var _models=require('../Services/loadScrapingModels');
 var scrapeModels=[];
@@ -23,7 +22,7 @@ var dataNormalizer=function(type,input,non){
     if(type==="header"){
       _.each(non,function(x){
         result=input.replace(x,"");
-      })
+      });
     
     }
     return result;
@@ -41,14 +40,19 @@ var linkNormalizer=function(_value,_base){
 
 router.get('/', function(req, res, next) {
   
+  console.log("Hello AIA");
   //res.setHeader('Content-Type', 'text/html;charset=utf-8');
+  //res.write("Hello");
   var ScrapeRule=new ScrapeRules({});
   ScrapeRule.findAll(function(err,docs){
   //ScrapeRule.findOne({'ENTITY_CODE':'Hoy'},function(err,docs){
   scrapeModels=docs;
   var outlets=0;
+  var total_entries=0;
+  var total_articles=0;
 _.each(scrapeModels,function(scrModel){
   
+  outlets++;
   var entries=0;
   var articles_count=0;
   //We have the scrape models for each news outlet
@@ -65,11 +69,16 @@ _.each(scrapeModels,function(scrModel){
       // Let's extract each headline single entry (article)
       // Later we'll extract each detail
       articles_count=$(scrModel.ARTICLE_ENTRY).length;
+      total_articles+=articles_count;
+      console.log("Working on "+scrModel.ENTITY_CODE);
+      console.log(articles_count+" hay para "+scrModel.ENTITY_CODE);
       $(scrModel.ARTICLE_ENTRY).each(function(){
-       
+        entries++;
+        total_entries++;
         var article=new ArticleRaw();
         var data = $(this);
           article.title=data.find(scrModel.TITLE_SELECTOR).text();
+          console.log(article.title);
           if(article.title.indexOf("<img src=")!==-1){
             article.title=data.find(scrModel.TITLE_SELECTOR).attr("alt");
           }
@@ -137,48 +146,54 @@ _.each(scrapeModels,function(scrModel){
                       article.extended={};
                       //Let's try to save article to database
                       article.save(function (err,art) {
-                        entries++;
+                        //console.log(article);
+                        
                         if (err) {
                           res.write("<p>Article"+" "+article._id+" Exists</p>");
-                          article.handleError(err);
+                         // article.handleError(err);
                         }
                         else{
                         //If we save it, let put reference of it in our temp array holder  
+                        res.write("<p>Article"+" "+article._id+" Saved</p>");
                         articles.data.push(art);
+                        
                         }
+
                         });
-                        if(articles_count===entries){
-                          outlets++;
-                          //console.log("done for "+scrModel.ENTITY_CODE+" entries:"+entries+"/Outlets count"+outlets);
-                          res.write("done for "+scrModel.ENTITY_CODE+" entries:"+entries+"/Outlets count"+outlets);
-                          resolve(articles.data);
-                          
-                          }
-                    
-                  })
+                        //console.log(articles_count);
+                        //console.log(entries);
+                         
+                           
+                  });
                   
                 }
                 });
           }
-         })
-       
+         
+         });
+         if(articles_count===entries){
+          console.log("finished")
+          console.log("done for "+scrModel.ENTITY_CODE+" entries:"+entries+"/Outlets count"+outlets);
+          res.write("done for "+scrModel.ENTITY_CODE+" entries:"+entries+"/Outlets count"+outlets);
+          resolve(articles.data);
+          
+          }      
          
   }
- 
+      
   
  
 });
   }).catch(function(e){
     console.log("Error ocurred on "+e);
   })
+  //console.log("Working");
   extract.then(function(data){
-    console.log(data);
-    if(outlets==scrapeModels.length-1){
-      console.log("Finished");
-      res.write(articles.data);
-
-    }
-  })
+ 
+    console.log("Finished with "+total_articles);
+ 
+    
+  });
   
   
 });

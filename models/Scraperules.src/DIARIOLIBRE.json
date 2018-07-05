@@ -1,0 +1,21 @@
+{
+    "_id" : "5740e6d7e4b08a80ca9108ba",
+    "ENTITY_FILE_NAME" : "DIARIOLIBRE",
+    "ENTITY_CODE" : "Diario Libre",
+    "ENTITY_URL" : "http://www.diariolibre.com",
+    "ENTITY_LOGO" : "https://igcdn-photos-h-a.akamaihd.net/hphotos-ak-xaf1/t51.2885-19/s320x320/12237125_529984880499847_1515670808_a.jpg",
+    "RECIPE_DETAIL" : ".art-title > a",
+    "RECIPE_DATE_GET" : "html>head>meta[property='og:DateTime']/@content",
+    "RECIPE_TAGS" : "head>meta[name='keywords']/@content",
+    "ARTICLE_IMAGE_1" : "img",
+    "ARTICLE_IMAGE_2" : "html>head>meta[property='og:image']/@content",
+    "ARTICLE_VIDEO" : "",
+    "TITLE_SELECTOR" : ".art-title",
+    "ARTICLE_XCERPT" : "p",
+    "XCERPT_IMAGE" : "img",
+    "ARTICLE_ENTRY" : ".article",
+    "ARTICLE_CONTENT" : ".detalle-texto/@.text",
+    "ARTICLE_AUDIO" : "",
+    "OUTLET_CREDIBILITY" : "",
+    "OUTLET_COUNTRY" : "DO"
+}

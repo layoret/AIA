@@ -5,7 +5,6 @@ var ScrapingruleSchema=mongoose.Schema({
     ENTITY_CODE:{type:String,default:"",required:true},
     ENTITY_URL:{type:String,default:"",required:true},
     ENTITY_LOGO:{type:String,default:"",required:false},
-    SCRAPE_TITULARES:{type:String,default:"",required:true},
     RECIPE_DETAIL:{type:String,default:"",required:true},
     RECIPE_DATE_GET:{type:String,default:"",required:true},
     RECIPE_TAGS:{type:String,default:"",required:false},
@@ -22,7 +21,7 @@ var ScrapingruleSchema=mongoose.Schema({
     OUTLET_COUNTRY:{type:String,default:"DO",required:false}
 })
 ScrapingruleSchema.methods.findAll = function (cb) {
-    return this.model('Scrapingrule').find({}, cb);
+    return this.model('Scrapingrule').find({/*ENTITY_CODE:"El Nacional"*/}, cb);
   };
   ScrapingruleSchema.methods.findOne = function (input,cb) {
     return this.model('Scrapingrule').find(input, cb);

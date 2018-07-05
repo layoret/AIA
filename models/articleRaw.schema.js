@@ -69,5 +69,8 @@ RawArticleSchema.methods.setBody=function(val){
 RawArticleSchema.methods.findAll=function(cb){
     return this.model('RawArticle').find({},cb);
 }
+RawArticleSchema.methods.findNoAnalyzed=function(cb){
+    return this.model('RawArticle').find({analyzed:false},cb);
+}
 
 module.exports=mongoose.model("RawArticle",RawArticleSchema);
