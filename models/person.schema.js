@@ -23,6 +23,7 @@ var PersonSchema=new mongoose.Schema({
                 negative:{type:Number,required:false},
             }
             
+            
            
         
 },{ minimize: false })

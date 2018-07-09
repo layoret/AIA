@@ -1,3 +1,4 @@
+
 var mongoose=require("mongoose");
 var md5 = require("md5");
 var ArticleSchema=new mongoose.Schema({
@@ -31,7 +32,22 @@ var ArticleSchema=new mongoose.Schema({
    originalOutlet:String,
    images:[String],
    tags:[String],
-   mainCategory:String
+   //Normalized data
+   entities:[{category:String,subtype:String,value:String}],
+   cities:[String],
+   categories:[String],
+   persons:[String],
+   organizations:[String],
+   locations:[String],
+   concepts:[String],
+   mainCategory:String,
+   //Related
+   relatedArticles:[
+       {
+        article:{type: mongoose.Schema.Types.ObjectId, ref: 'Article'},
+        relation:String
+       }
+    ]
             
 })
 ArticleSchema.methods.findAll=function(cb){

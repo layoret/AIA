@@ -34,8 +34,11 @@ var RawArticleSchema=new mongoose.Schema({
            tags:[String],
            mainCategory:String,
            extended:{ type: mongoose.Schema.Types.Mixed, default: {} },
-           analyzed:{type:Boolean, default:false}
-           
+           analyzed:{type:Boolean, default:false},
+           normalized:{type:Boolean,default:false},
+           lastUpdate:{ type:Date,
+           default:Date.now,
+           },
         
 },{ minimize: false })
 RawArticleSchema.methods.handleError=function(val){
@@ -66,11 +69,15 @@ RawArticleSchema.methods.setBody=function(val){
     
     
 }
+
 RawArticleSchema.methods.findAll=function(cb){
     return this.model('RawArticle').find({},cb);
 }
+RawArticleSchema.methods.findNoNormalized=function(cb){
+    return this.model('RawArticle').find({$or:[{normalized:false},{normalized:null}]},cb);
+}
 RawArticleSchema.methods.findNoAnalyzed=function(cb){
-    return this.model('RawArticle').find({analyzed:false},cb);
+    return this.model('RawArticle').find({$and:[{analyzed:false},{analyzed:true}]},cb);
 }
 
 module.exports=mongoose.model("RawArticle",RawArticleSchema);

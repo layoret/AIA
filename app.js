@@ -13,6 +13,7 @@ var postImage = require('./routes/postImage');
 var scrapingModels=require('./routes/loadScrapingModels');
 var scrapeRouter2 = require('./routes/scrape2');
 var meaningCloud=require('./routes/meaningCloud');
+var normalizeExtended=require('./routes/normalizeExtended');
 var app = express();
 //
 
@@ -31,7 +32,8 @@ app.use('/scrape2',scrapeRouter2);
 app.use('/users', usersRouter);
 app.use('/image', postImage );
 app.use('/models', scrapingModels );
-app.use('/CloudNLP',meaningCloud)
+app.use('/CloudNLP',meaningCloud);
+app.use('/NormalizeExtended',normalizeExtended);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

@@ -62,28 +62,31 @@ findArticles.then(function(_latestArticles){
   if(endx>0){
   function analyze(){
     
-      var article=  new RawArticle({});
-      article= _latestArticles[idx];
+      var rawArticleEntry=  new RawArticle({});
+      rawArticleEntry= _latestArticles[idx];
       idx++;
-      res.write("<p>working with "+article._id+"</p>");
-      console.log(article._id);
-      options.form.txt=article.bodyText;
-      if(article.analyzed!==true){
+      res.write("<p>working with "+rawArticleEntry._id+"</p>");
+      console.log(rawArticleEntry._id);
+      options.form.txt=rawArticleEntry.bodyText;
+      if(rawArticleEntry.analyzed!==true){
       request(options, function (error, response, body) {
         if (error) handleError(error);
         try{
-          article.extended=JSON.parse(body);
-          article.analyzed=true;
+          //Grab the extended info
+          rawArticleEntry.extended=JSON.parse(body);
+          rawArticleEntry.analyzed=true;
+          rawArticleEntry.normalized=false;
         }catch(e){}
+        //Load model to be able to save to mongodb
         var currentArticle=mongoose.model("RawArticle");
-
-        currentArticle.findOneAndUpdate({_id:article._id},{extended:article.extended,analyzed:article.analyzed},{new:false},function(error,result){
+        //Article has extended data?
+        currentArticle.findOneAndUpdate({_id:rawArticleEntry._id},{extended:rawArticleEntry.extended,analyzed:rawArticleEntry.analyzed,normalized:false,lastUpdated:Date()},{new:false},function(error,result){
         if(error)
           res.json(mResponse.response(null, null, "something went wrong", null));
         else
        {
         
-         console.log(result);
+         //console.log(result);
          console.log(idx); 
        }
        if(idx==endx){
@@ -96,10 +99,10 @@ findArticles.then(function(_latestArticles){
       
 
 })
-res.write("<p>done "+article._id+" "+article.title+" </p>");
+res.write("<p>done "+rawArticleEntry._id+" "+rawArticleEntry.title+" </p>");
       }
 else{
-  res.write("<p>Skipping"+article._id+" "+article.title+" </p>");
+  res.write("<p>Skipping"+rawArticleEntry._id+" "+rawArticleEntry.title+" </p>");
 }
 };
 const intervalObj = setInterval(analyze,15000);
