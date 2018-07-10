@@ -77,7 +77,7 @@ RawArticleSchema.methods.findNoNormalized=function(cb){
     return this.model('RawArticle').find({$or:[{normalized:false},{normalized:null}]},cb);
 }
 RawArticleSchema.methods.findNoAnalyzed=function(cb){
-    return this.model('RawArticle').find({$and:[{analyzed:false},{analyzed:true}]},cb);
+    return this.model('RawArticle').find({analyzed:false},cb);
 }
 
 module.exports=mongoose.model("RawArticle",RawArticleSchema);

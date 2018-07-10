@@ -10,11 +10,7 @@ var identityService=require('../Services/identity.service');
 var db=require("../models/db");
 var RawArticle=require("../models/articleRaw.schema");
 var ScrapeRules=require("../models/scraperules.schema");
-var xpath=require("xpath");
-var dom = require('xmldom').DOMParser;
-//Outlet scraping models 
-//var _models=require('../Services/loadScrapingModels');
-//var scrapeModels=[];
+
 var latestArticles=[];
 
 

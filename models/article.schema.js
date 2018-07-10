@@ -40,6 +40,9 @@ var ArticleSchema=new mongoose.Schema({
    organizations:[String],
    locations:[String],
    concepts:[String],
+   countries:[String],
+   videos:[String],
+   dates:[{type:Date}],
    mainCategory:String,
    //Related
    relatedArticles:[

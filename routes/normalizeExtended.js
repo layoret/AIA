@@ -13,6 +13,7 @@ var RawArticle=require("../models/articleRaw.schema");
 var Article=require("../models/article.schema");
 //var ScrapeRules=require("../models/scraperules.schema");
 var latestArticles=[];
+var normalizedArticles=[];
 var entries=0;
 var findArticles=new Promise(function(resolve,reject){
     var _rawArticleModel=new RawArticle({});
@@ -28,6 +29,8 @@ var handleError=function(error){
   console.log(error);
 
   }
+  
+  //--- Author : Julian De La Rosa
   function getEntities(from,to){
     _.each(from.entity_list,function(entity){
       //console.log(entity.sementity.type+" for "+entity.form);
@@ -60,6 +63,7 @@ router.get('/', function(req, res, next) {
         if(rawArticleEntry.normalized!==true){
           //Populate the clean article from rawArticle
           //--------------- Non mutable values ------
+          articleEntry.id=rawArticleEntry._id;
           articleEntry.title=rawArticleEntry.title;
           articleEntry.newsId=rawArticleEntry.newsId;
           articleEntry.date=rawArticleEntry.date;
@@ -79,31 +83,35 @@ router.get('/', function(req, res, next) {
         //getOrganizations(raw)
         articleEntry.save(function (err,art) {
           if (err) {
-            res.write("<p>Article"+" "+articleEntry._id+" Exists</p>");
+            res.write("<p>Article"+" "+articleEntry._id+" exists or is invalid</p>");
            // article.handleError(err);
           }
           else{
+            normalizedArticles.push(art);
+            //Let's update original article to normalized
+            currentArticle.findOneAndUpdate({_id:rawArticleEntry._id},{analyzed:rawArticleEntry.analyzed,normalized:true,lastUpdated:Date()},{new:false},function(error,result){
+              if(error)
+                res.json(mResponse.response(null, null, "something went wrong", null));
+              else
+             {
+              
+
+               //console.log(result);
+               console.log(idx); 
+             }
+             if(idx==endx){
+              clearInterval(intervalObj);
+              console.log("finished");
+            }
+            
+              
+       });
+      
+      res.write("<p>done "+rawArticleEntry._id+" "+rawArticleEntry.title+" </p>");
             //console.log(art);
           }
         });
-        currentArticle.findOneAndUpdate({_id:rawArticleEntry._id},{analyzed:rawArticleEntry.analyzed,normalized:false,lastUpdated:Date()},{new:false},function(error,result){
-        if(error)
-          res.json(mResponse.response(null, null, "something went wrong", null));
-        else
-       {
         
-         //console.log(result);
-         console.log(idx); 
-       }
-       if(idx==endx){
-        clearInterval(intervalObj);
-        console.log("finished");
-      }
-      
-        
- });
-
-res.write("<p>done "+rawArticleEntry._id+" "+rawArticleEntry.title+" </p>");
       }
 else{
   res.write("<p>Skipping"+rawArticleEntry._id+" "+rawArticleEntry.title+" </p>");
