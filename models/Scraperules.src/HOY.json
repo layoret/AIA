@@ -1,0 +1,21 @@
+{
+    "_id" : "5740e6d7e4b08a80ca9108b8",
+    "ENTITY_FILE_NAME" : "HOY",
+    "ENTITY_CODE" : "Hoy",
+    "ENTITY_URL" : "http://www.hoy.com.do",
+    "ENTITY_LOGO" : "http://www.gonaturalcaribe.com/uploads/8/7/2/7/8727637/6754214.jpeg",
+    "RECIPE_DETAIL" : "a",
+    "RECIPE_DATE_GET" : "head>meta[property='article:published_time']/@content",
+    "RECIPE_TAGS" : "head>meta[property='article:tag']/@content",
+    "ARTICLE_IMAGE_1" : "img/@src",
+    "ARTICLE_IMAGE_2" : "head>meta[property='og:image']/@content",
+    "ARTICLE_VIDEO" : "",
+    "TITLE_SELECTOR" : ".title",
+    "ARTICLE_XCERPT" : "p",
+    "XCERPT_IMAGE" : "img",
+    "ARTICLE_ENTRY" : "article",
+    "ARTICLE_CONTENT" : "#single-article-content/@.articulo",
+    "ARTICLE_AUDIO" : "",
+    "OUTLET_CREDIBILITY" : "",
+    "OUTLET_COUNTRY" : "DO"
+}
