@@ -1,7 +1,8 @@
 
 // view engine setup
 const mongoose = require('mongoose');
-var dbURI="mongodb://kloudsix.com:27017/AIANews";
+//var dbURI="mongodb://kloudsix.com:27017/AIANews";
+var dbURI="mongodb://localhost:27017/AIANews";
 const options = {
 
     autoIndex: false, // Don't build indexes
